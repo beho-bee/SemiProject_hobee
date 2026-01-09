@@ -21,7 +21,7 @@ public class FilterConfig {
 		filter.setFilter(new LoginFilter());
 		
 		// 필터 동작할 URL 세팅
-		String[] filteringURL = {"/myPage/*", "/editBoard/*", "/report/*", "/penalty/*" };
+		String[] filteringURL = {"/myPage/*", "/editBoard/*", "/report/*", "/penalty/*"};
 		
 		// filter.setUrlPatterns( 컬렉션 ) => 배열 -> 컬렉션
 		filter.setUrlPatterns( Arrays.asList(filteringURL) );
@@ -43,7 +43,7 @@ public class FilterConfig {
 		filter.setFilter(new AdminFilter());
 		
 		// 필터 동작할 URL 세팅
-		String[] filteringURL = { "/report/manageReport", "/penalty/managePenalty"  };
+		String[] filteringURL = { "/report/manageReport", "/penalty/managePenalty", "/footer/manageCS"  };
 		
 		// filter.setUrlPatterns( 컬렉션 ) => 배열 -> 컬렉션
 		filter.setUrlPatterns( Arrays.asList(filteringURL) );
