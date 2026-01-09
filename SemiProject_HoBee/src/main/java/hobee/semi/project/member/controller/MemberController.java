@@ -114,7 +114,7 @@ public class MemberController {
 	// 로그아웃
 	@GetMapping("logout")
 	public String logout(SessionStatus sessionStatus) {
-		sessionStatus.setComplete();
+		sessionStatus.setComplete(); // 세션 정보 비워버려
 		return "redirect:/";
 	}
 	

@@ -394,7 +394,7 @@ memberNickname.addEventListener("input" ,e=>{
         return;
     }
 
-    const regExp = /^[a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ]{2,8}$/;
+    const regExp = /^[a-zA-Z가-힣]{2,8}$/;
 
 
     if(regExp.test(inputNickname)){
