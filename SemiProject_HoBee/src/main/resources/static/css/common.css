@@ -1,3 +1,15 @@
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+}
+
+body {
+  font-family: 'Pretendard';
+}
+
 /* header css */
 
 .header {
@@ -37,17 +49,19 @@
 
 .nav-item {
   padding: 8px 14px;
-  border-radius: 20px;
+  border-radius: 30px;
 
   text-decoration: none;
   color: #452829;
   font-size: 16px;
 
+  line-height: 42px;
+
   transition-duration: 0.25s;
 }
 
 .nav-item:hover {
-  background-color: #FFF57E;
+  font-weight: bold;
   color: #452829;
   text-decoration: none;
 }
@@ -64,16 +78,34 @@
   border-radius: 6px;
   font-size: 13px;
   text-decoration: none;
+  transition: 0.2s ease;
 }
 
 .login-btn {
   background: #452829;
-  color: white;
+  color: #FFF57E;
+}
+
+.login-btn:hover {
+    background-color: #593737;
+    transform: translateY(-2px);
+}
+
+.login-btn:active {
+    transform: scale(0.95);
 }
 
 .signup-btn {
   border: 1px solid #452829;
   color: #452829;
+}
+
+.signup-btn:hover {
+    transform: translateY(-2px);
+}
+
+.signup-btn:active {
+    transform: scale(0.95);
 }
 
 /* footer css */
@@ -196,6 +228,23 @@
 .header-btn-logout:hover {
   background-color: #452829;
   text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.btn-submit:active {
+    transform: scale(0.95);
+}
+
+.header-btn-a{
+  transition: 0.2s ease;
+}
+
+.header-btn-logout:hover {
+  transform: translateY(-2px);
+}
+
+.btn-submit:active {
+    transform: scale(0.95);
 }
 
 #nickname {

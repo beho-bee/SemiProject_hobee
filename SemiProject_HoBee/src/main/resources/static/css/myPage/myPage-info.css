@@ -57,7 +57,7 @@
   display: flex;
   /* justify-content: first baseline; */
   align-items: self-end;
-  
+
   gap: 24px;
   margin-bottom: 50px;
 }
@@ -69,7 +69,7 @@
   /* background-color: #FFF57E; */
 }
 
-.profile-img > span {
+.profile-img>span {
 
   padding-right: 49%;
 
@@ -205,7 +205,26 @@
   color: #452829;
   font-size: 14px;
   font-weight: bold;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
+
+.hobby-tag .remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 0;
+  color: #452829;
+}
+
+.hobby-tag .remove-btn:hover {
+  color: #ff4d4f;
+}
+
 
 .value {
   color: #ddd;

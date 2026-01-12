@@ -35,142 +35,219 @@ if (updateInfo != null) {
   }
   
 
-  /* =========================
-     취미 선택 (메인 1개 / 서브 다중)
-  ========================= */
+/*********************************************************
+ * 초기 선택된 취미 (서버 → JS)
+ *********************************************************/
+let selectedHobbyList = window.selectedHobbyList || [];
 
-  // 서버에서 내려준 기존 취미 코드
-  
-  let selectedHobbyList = window.selectedHobbyList || [];
+const hiddenHobbyArea = document.querySelector("#hiddenHobbyArea");
 
-  const hiddenHobbyArea = document.querySelector("#hiddenHobbyArea");
+/*********************************************************
+ * 취미 데이터
+ *********************************************************/
+const subHobbyData = {
+  sports: [
+    { id: 101, name: "러닝" }, { id: 102, name: "헬스" }, { id: 103, name: "등산" },
+    { id: 104, name: "사이클" }, { id: 105, name: "볼링" }, { id: 106, name: "탁구" },
+    { id: 107, name: "수영" }, { id: 108, name: "축구" }, { id: 109, name: "야구" }, { id: 110, name: "골프" }
+  ],
+  art: [
+    { id: 201, name: "드로잉" }, { id: 202, name: "캘리그라피" }, { id: 203, name: "사진 촬영" },
+    { id: 204, name: "영상 편집" }, { id: 205, name: "악기 연주" }, { id: 206, name: "도예/공예" },
+    { id: 207, name: "전시회·공연 관람" }
+  ],
+  selfDevelop: [
+    { id: 301, name: "독서" }, { id: 302, name: "글쓰기" }, { id: 303, name: "코딩" },
+    { id: 304, name: "외국어 공부" }, { id: 305, name: "요리" }, { id: 306, name: "재테크/투자" }
+  ],
+  social: [
+    { id: 401, name: "봉사활동" }, { id: 402, name: "북클럽" }, { id: 403, name: "보드게임 모임" },
+    { id: 404, name: "취미 클래스" }, { id: 405, name: "스포츠 동호회" },
+    { id: 406, name: "스터디 모임" }, { id: 407, name: "그룹 운동" }
+  ],
+  shopping: [
+    { id: 501, name: "피규어/굿즈 수집" }, { id: 502, name: "음반/LP 수집" },
+    { id: 503, name: "향수 수집" }, { id: 504, name: "패션 아이템 수집" },
+    { id: 505, name: "문구류 수집" }, { id: 506, name: "한정판/콜라보 수집" }
+  ]
+};
 
-  const subHobbyData = {
-    sports: [
-      { id: 101, name: "러닝" }, { id: 102, name: "헬스" }, { id: 103, name: "등산" },
-      { id: 104, name: "사이클" }, { id: 105, name: "볼링" }, { id: 106, name: "탁구" },
-      { id: 107, name: "수영" }, { id: 108, name: "축구" }, { id: 109, name: "야구" }, { id: 110, name: "골프" }
-    ],
-    art: [
-      { id: 201, name: "드로잉" }, { id: 202, name: "캘리그라피" }, { id: 203, name: "사진 촬영" },
-      { id: 204, name: "영상 편집" }, { id: 205, name: "악기 연주" }, { id: 206, name: "도예/공예" },
-      { id: 207, name: "전시회·공연 관람" }
-    ],
-    selfDevelop: [
-      { id: 301, name: "독서" }, { id: 302, name: "글쓰기" }, { id: 303, name: "코딩" },
-      { id: 304, name: "외국어 공부" }, { id: 305, name: "요리" }, { id: 306, name: "재테크/투자" }
-    ],
-    social: [
-      { id: 401, name: "봉사활동" }, { id: 402, name: "북클럽" }, { id: 403, name: "보드게임 모임" },
-      { id: 404, name: "취미 클래스" }, { id: 405, name: "스포츠 동호회" },
-      { id: 406, name: "스터디 모임" }, { id: 407, name: "그룹 운동" }
-    ],
-    shopping: [
-      { id: 501, name: "피규어/굿즈 수집" }, { id: 502, name: "음반/LP 수집" },
-      { id: 503, name: "향수 수집" }, { id: 504, name: "패션 아이템 수집" },
-      { id: 505, name: "문구류 수집" }, { id: 506, name: "한정판/콜라보 수집" }
-    ]
-  };
+/*********************************************************
+ * 메인 카테고리 관련
+ *********************************************************/
+let activeMainHobby = null;
 
-  let activeMainHobby = null;
+const mainCategoryArea = document.querySelector("#mainCategoryArea");
+const categoryArea = document.querySelector("#CategoryArea");
+const subTitle = document.querySelector("#subTitle");
 
-  const mainCategoryArea = document.querySelector("#mainCategoryArea");
-  const categoryArea = document.querySelector("#CategoryArea");
-  const subTitle = document.querySelector("#subTitle");
+function getMainHobbyName(key) {
+  return {
+    art: "문화·예술",
+    selfDevelop: "자기계발",
+    sports: "운동·레저",
+    social: "사회 교류",
+    shopping: "수집·소비"
+  }[key];
+}
 
-  function getMainHobbyName(key) {
-    return {
-      art: "문화·예술",
-      selfDevelop: "자기계발",
-      sports: "운동·레저",
-      social: "사회 교류",
-      shopping: "수집·소비"
-    }[key];
+/*********************************************************
+ * 유틸
+ *********************************************************/
+function findHobbyIdByName(name) {
+  for (const list of Object.values(subHobbyData)) {
+    const found = list.find(h => h.name === name);
+    if (found) return found.id;
   }
+  return null;
+}
 
-  /* 현재 선택된 서브 취미 → hidden input으로 누적 */
-  function syncSelectedSubHobbies() {
-    const checked = document.querySelectorAll('#CategoryArea input:checked');
+/*********************************************************
+ * 기존 서버 렌더링 취미 태그에 X 버튼 주입
+ *********************************************************/
+function enhanceExistingHobbyTags() {
+  document.querySelectorAll(".hobby-tag").forEach(tag => {
+    if (tag.querySelector(".remove-btn")) return;
 
-    checked.forEach(cb => {
-      const id = Number(cb.value);
-      if (!selectedHobbyList.includes(id)) {
-        selectedHobbyList.push(id);
+    const hobbyName = tag.textContent.trim();
+    const hobbyId = findHobbyIdByName(hobbyName);
+    if (!hobbyId) return;
 
-        const hidden = document.createElement("input");
-        hidden.type = "hidden";
-        hidden.name = "hobbyCode";
-        hidden.value = id;
+    tag.dataset.id = hobbyId;
 
-        hiddenHobbyArea.appendChild(hidden);
-      }
-    });
-  }
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "remove-btn";
+    btn.textContent = "×";
 
-  function renderMainHobbies() {
-    mainCategoryArea.innerHTML = "";
+    btn.addEventListener("click", () => removeHobbyById(hobbyId, tag));
 
-    Object.keys(subHobbyData).forEach(key => {
-      const label = document.createElement("label");
-      label.className = "radio-like" + (activeMainHobby === key ? " checked" : "");
-      label.textContent = getMainHobbyName(key);
+    tag.appendChild(btn);
+  });
+}
 
-      label.addEventListener("click", () => {
-        if (activeMainHobby === key) return;
+/*********************************************************
+ * 취미 제거 로직
+ *********************************************************/
+function removeHobbyById(id, tagElement) {
+  // 상태 제거
+  selectedHobbyList = selectedHobbyList.filter(v => v !== id);
 
-        syncSelectedSubHobbies(); // 
-        categoryArea.innerHTML = "";
-        subTitle.style.display = "none";
+  // hidden input 제거
+  [...hiddenHobbyArea.children].forEach(input => {
+    if (Number(input.value) === id) input.remove();
+  });
 
-        activeMainHobby = key;
-        renderSubHobbies(key);
-        renderMainHobbies();
-      });
+  // 체크박스 해제
+  const checkbox = document.querySelector(
+    `#CategoryArea input[value="${id}"]`
+  );
+  if (checkbox) checkbox.checked = false;
 
-      mainCategoryArea.appendChild(label);
-    });
-  }
+  // 화면 제거
+  tagElement.remove();
+}
 
-  function renderSubHobbies(mainKey) {
-    subTitle.style.display = "block";
+/*********************************************************
+ * hidden input 동기화 (추가 전용)
+ *********************************************************/
+function syncSelectedSubHobbies() {
+  const checked = document.querySelectorAll('#CategoryArea input:checked');
 
-    subHobbyData[mainKey].forEach(hobby => {
-      const label = document.createElement("label");
-      const checkbox = document.createElement("input");
+  checked.forEach(cb => {
+    const id = Number(cb.value);
+    if (!selectedHobbyList.includes(id)) {
+      selectedHobbyList.push(id);
 
-      checkbox.type = "checkbox";
-      checkbox.value = hobby.id;
-      checkbox.checked = selectedHobbyList.includes(hobby.id); // ⭐ 핵심
-
-      label.appendChild(checkbox);
-      label.append(` ${hobby.name}`);
-      categoryArea.appendChild(label);
-    });
-  }
-
-  /* 최초 진입 시 hidden input 복원 */
-  function initSelectedHobbies() {
-    selectedHobbyList.forEach(id => {
       const hidden = document.createElement("input");
       hidden.type = "hidden";
       hidden.name = "hobbyCode";
       hidden.value = id;
+
       hiddenHobbyArea.appendChild(hidden);
+    }
+  });
+}
+
+/*********************************************************
+ * 메인 취미 렌더링
+ *********************************************************/
+function renderMainHobbies() {
+  mainCategoryArea.innerHTML = "";
+
+  Object.keys(subHobbyData).forEach(key => {
+    const label = document.createElement("label");
+    label.className =
+      "radio-like" + (activeMainHobby === key ? " checked" : "");
+    label.textContent = getMainHobbyName(key);
+
+    label.addEventListener("click", () => {
+      if (activeMainHobby === key) return;
+
+      syncSelectedSubHobbies();
+      categoryArea.innerHTML = "";
+      subTitle.style.display = "none";
+
+      activeMainHobby = key;
+      renderSubHobbies(key);
+      renderMainHobbies();
     });
 
-    Object.entries(subHobbyData).some(([key, list]) => {
-      if (list.some(h => selectedHobbyList.includes(h.id))) {
-        activeMainHobby = key;
-        renderSubHobbies(key);
-        return true;
-      }
-    });
+    mainCategoryArea.appendChild(label);
+  });
+}
 
-    renderMainHobbies();
-    syncSelectedSubHobbies();
-  }
+/*********************************************************
+ * 서브 취미 렌더링
+ *********************************************************/
+function renderSubHobbies(mainKey) {
+  subTitle.style.display = "block";
 
-  initSelectedHobbies();
+  subHobbyData[mainKey].forEach(hobby => {
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+
+    checkbox.type = "checkbox";
+    checkbox.value = hobby.id;
+    checkbox.checked = selectedHobbyList.includes(hobby.id);
+
+    label.appendChild(checkbox);
+    label.append(` ${hobby.name}`);
+    categoryArea.appendChild(label);
+  });
+}
+
+/*********************************************************
+ * 초기화
+ *********************************************************/
+function initSelectedHobbies() {
+  // hidden 복원
+  selectedHobbyList.forEach(id => {
+    const hidden = document.createElement("input");
+    hidden.type = "hidden";
+    hidden.name = "hobbyCode";
+    hidden.value = id;
+    hiddenHobbyArea.appendChild(hidden);
+  });
+
+  // 최초 활성 메인 취미
+  Object.entries(subHobbyData).some(([key, list]) => {
+    if (list.some(h => selectedHobbyList.includes(h.id))) {
+      activeMainHobby = key;
+      renderSubHobbies(key);
+      return true;
+    }
+  });
+
+  renderMainHobbies();
+  enhanceExistingHobbyTags();
+}
+
+/*********************************************************
+ * 실행
+ *********************************************************/
+initSelectedHobbies();
+
 
 
   /* 닉네임 유효성 검사 */
@@ -445,7 +522,7 @@ deleteImage.addEventListener("click", () => {
 // 폼 제출 시 유효성 검사
 profileForm.addEventListener("submit", e => {
   console.log(imageInput.files[0]);
-	if (profileImg.length = 0) { // 변경 사항이 없는 경우 제출 막기
+	if (statusCheck === -1) { // 변경 사항이 없는 경우 제출 막기
 		e.preventDefault();
 		alert("이미지 변경 후 제출하세요");
 	}

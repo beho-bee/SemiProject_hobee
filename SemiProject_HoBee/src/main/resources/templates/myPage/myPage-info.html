@@ -89,7 +89,8 @@
             <label>취미</label>
             <!-- 취미 있을 때 -->
             <div class="hobby-tags" th:if="${!#lists.isEmpty(session.loginMember.hobbyList)}">
-              <span class="hobby-tag" th:each="hobby : ${session.loginMember.hobbyList}" th:text="${hobby.hobbyName}" th:data-hobby-list="${session.loginMember.hobbyList}">
+              <span class="hobby-tag" th:each="hobby : ${session.loginMember.hobbyList}" th:text="${hobby.hobbyName}"
+                th:data-hobby-list="${session.loginMember.hobbyList}">
                 러닝
               </span>
             </div>
