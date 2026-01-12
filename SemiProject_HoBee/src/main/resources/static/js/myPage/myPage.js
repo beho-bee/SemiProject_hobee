@@ -40,6 +40,7 @@ if (updateInfo != null) {
   ========================= */
 
   // 서버에서 내려준 기존 취미 코드
+  
   let selectedHobbyList = window.selectedHobbyList || [];
 
   const hiddenHobbyArea = document.querySelector("#hiddenHobbyArea");
